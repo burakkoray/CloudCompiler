@@ -1,0 +1,10 @@
+  <style>
+    .CodeMirror { line-height: 1.2; }
+    span.clicky {
+      cursor: pointer;
+      background: #d70;
+      color: white;
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+  </style>
