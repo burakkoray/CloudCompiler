@@ -6,6 +6,11 @@ Route::get('/' , array(
 	'uses' => 'HomeController@home'
 )); 
 
+Route::get('/fs/operations' , array(
+  'as' => 'operation',
+  'uses' => 'FsController@operation'
+)); 
+
 Route::get('/user/{username}',array(
     'as' => 'profile-user',
     'uses'=> 'ProfileController@user'
