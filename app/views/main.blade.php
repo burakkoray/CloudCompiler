@@ -7,9 +7,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-    
-
-    <link rel="stylesheet" href="/css/style.min.css" />
 
     <title>GitCompilerEditor</title>
 
@@ -21,6 +18,7 @@
     <link href="/css/fullscreen.css" rel="stylesheet">
     <link href="/css/codemirror.css" rel="stylesheet">
     <link href="/css/dialog.css" rel="stylesheet">
+    <link href="/css/octicons.css" rel="stylesheet">
     <link href="/css/style.min.css" rel="stylesheet">
     
 
@@ -40,7 +38,7 @@
      <script src="/js/searchcursor.js"></script>
      <script src="/js/search.js"></script>
      <script src="/js/fullscreen.js"></script>
-   
+
    
     <script src="/js/jquery.easing.js" type="text/javascript"></script>
 

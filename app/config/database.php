@@ -57,7 +57,7 @@ return array(
 			'host'      => '127.0.0.1',
 			'database'  => 'auth',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'ayserkose6546242',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

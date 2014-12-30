@@ -93,7 +93,7 @@ return array(
 	|
 	*/
 
-	'password' => 'gytecompiler101044051',
+	'password' => 'abwezsllahnggfhw',
 
 	/*
 	|--------------------------------------------------------------------------

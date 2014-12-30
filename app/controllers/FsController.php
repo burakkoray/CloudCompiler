@@ -1,5 +1,7 @@
 <?php
-
+if (!ini_get('display_errors')) {
+    ini_set('display_errors', 1);
+}
 class FsController extends BaseController {
 	public function operation()
 	{ 
@@ -18,9 +20,14 @@ class FsController extends BaseController {
 						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
 						$rslt = $fs->data($node);
 						break;
+					case "set_content":
+						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
+						$content = $_POST['content'];
+						$rslt = $fs->update($node,$content);
+						break;
 					case 'create_node':
 						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
-						$rslt = $fs->create($node, isset($_GET['text']) ? $_GET['text'] : '', (!isset($_GET['type']) || $_GET['type'] !== 'file'));
+						$rslt = $fs->create($node, isset($_GET['text']) ? $_GET['text'] : '', isset($_GET['type']) ? $_GET['type'] : '');
 						break;
 					case 'rename_node':
 						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
@@ -99,10 +106,20 @@ class fs
 			$tmp = preg_match('([^ a-zа-я-_0-9.]+)ui', $item);
 			if($tmp === false || $tmp === 1) { continue; }
 			if(is_dir($dir . DIRECTORY_SEPARATOR . $item)) {
-				$res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'icon' => 'folder');
+				$type = 'folder';
+				$itemDir = $dir . DIRECTORY_SEPARATOR . $item.DIRECTORY_SEPARATOR;
+				if(file_exists($itemDir.'.cproject'))
+					$type = 'cproject';
+				else if(file_exists($itemDir.'.javaproject'))
+					$type = 'javaproject';
+				else if(file_exists($itemDir.'.pythonproject'))
+					$type = 'pythonproject';
+
+				$res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'icon' => $type, 'type' => $type);
 			}
 			else {
-				$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item,'.') + 1));
+				if($item !== '.cproject' && $item !== '.javaproject' && $item !== '.pythonproject')
+					$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item,'.') + 1));
 			}
 		}
 		if($with_root && $this->id($dir) === '/') {
@@ -110,6 +127,20 @@ class fs
 		}
 		return $res;
 	}
+
+	public function update($id,$content) {
+		$dir = $this->path($id);
+		$result = array();
+		if(is_file($dir)) {
+			file_put_contents($dir, $content);
+			header('Content-Type: application/json; charset=utf-8');
+			$result = array('success' => 'File Saved');
+		} else
+			$result = array('error' => 'Unable to find id:'+$id);
+
+		return $result;
+	}
+
 	public function data($id) {
 		if(strpos($id, ":")) {
 			$id = array_map(array($this, 'id'), explode(':', $id));
@@ -159,18 +190,43 @@ class fs
 		}
 		throw new Exception('Not a valid selection: ' . $dir);
 	}
-	public function create($id, $name, $mkdir = false) {
+	public function create($id, $name, $type) {
+		$mkdir = ($type !== 'file');
 		$dir = $this->path($id);
 		if(preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
 			throw new Exception('Invalid name: ' . $name);
 		}
+		$file = $dir. DIRECTORY_SEPARATOR . $name;
 		if($mkdir) {
-			mkdir($dir . DIRECTORY_SEPARATOR . $name);
+			mkdir($file);
+		} else {
+			file_put_contents($file, '');
 		}
-		else {
-			file_put_contents($dir . DIRECTORY_SEPARATOR . $name, '');
+
+		$file = $dir. DIRECTORY_SEPARATOR . escapeshellarg($name);
+
+		$userFilePath = public_path() . DIRECTORY_SEPARATOR .'user-files'.DIRECTORY_SEPARATOR;
+		$cpCmd = '';
+		switch ($type) {
+			case 'cProject':
+				$templatePath = $userFilePath.'C'.DIRECTORY_SEPARATOR.'*';
+				$cpCmd = "cp -r ".$templatePath.' '.$file;
+				break;
+			case 'javaProject':
+				$templatePath = $userFilePath.'Java'.DIRECTORY_SEPARATOR.'*';
+				$cpCmd = "cp -r ".$templatePath.' '.$file;
+				break;
+			case 'pythonProject':
+				$templatePath = $userFilePath.'Python'.DIRECTORY_SEPARATOR.'*';
+				$cpCmd = "cp -r ".$templatePath.' '.$file;
+				break;
 		}
-		return array('id' => $this->id($dir . DIRECTORY_SEPARATOR . $name));
+		$output = '';
+		$retrun_var = '';
+		if(!empty($cpCmd)) {
+			$output = exec($cpCmd,$output, $retrun_var);
+		}
+		return array('id' => $this->id($dir . DIRECTORY_SEPARATOR . $name),'cmd'=>$cpCmd,'output'=>$output,'returnVar'=>$retrun_var);
 	}
 	public function rename($id, $name) {
 		$dir = $this->path($id);
@@ -234,4 +290,6 @@ class fs
 		}
 		return array('id' => $this->id($new));
 	}
+
+
 }

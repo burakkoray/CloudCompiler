@@ -6,7 +6,7 @@ Route::get('/' , array(
 	'uses' => 'HomeController@home'
 )); 
 
-Route::get('/fs/operations' , array(
+Route::any('/fs/operations' , array(
   'as' => 'operation',
   'uses' => 'FsController@operation'
 )); 
@@ -15,6 +15,10 @@ Route::get('/user/{username}',array(
     'as' => 'profile-user',
     'uses'=> 'ProfileController@user'
     ));
+
+Route::post('/Ds/showoutputs',
+array('as' => 'showoutput',  'uses' => 'DisplayController@showoutput')
+);
  
 /*Authenticated group*/
 Route::group(array('before'=>'auth'),function(){

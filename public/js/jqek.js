@@ -22,8 +22,8 @@
 							return true;
 						},
 						'themes' : {
-							'responsive' : false,
-							'variant' : 'small',
+							'responsive' : true,
+							'variant' : 'large',
 							'stripes' : true
 						}
 					},
@@ -36,27 +36,57 @@
 							delete tmp.create.action;
 							tmp.create.label = "New";
 							tmp.create.submenu = {
-								"create_folder" : {
-									"separator_after"	: true,
-									"label"				: "Folder",
+								// "create_folder" : {
+								// 	"separator_after"	: true,
+								// 	"label"				: "Folder",
+								// 	"action"			: function (data) {
+								// 		var inst = $.jstree.reference(data.reference),
+								// 			obj = inst.get_node(data.reference);
+								// 		inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+								// 			setTimeout(function () { inst.edit(new_node); },0);
+								// 		});
+								// 	}
+								// },
+								"createCProject" : {
+									"label"				: "C Project",
 									"action"			: function (data) {
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
-										inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+										inst.create_node(obj, { type : "cProject" }, "last", function (new_node) {
 											setTimeout(function () { inst.edit(new_node); },0);
 										});
 									}
 								},
-								"create_file" : {
-									"label"				: "File",
+								"createJavaProject" : {
+									"label"				: "Java Project",
 									"action"			: function (data) {
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
-										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+										inst.create_node(obj, { type : "javaProject" }, "last", function (new_node) {
 											setTimeout(function () { inst.edit(new_node); },0);
 										});
 									}
-								}
+								},
+								"createPythonProject" : {
+									"label"				: "Python Project",
+									"action"			: function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "pythonProject" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								},
+								// "create_file" : {
+								// 	"label"				: "File",
+								// 	"action"			: function (data) {
+								// 		var inst = $.jstree.reference(data.reference),
+								// 			obj = inst.get_node(data.reference);
+								// 		inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+								// 			setTimeout(function () { inst.edit(new_node); },0);
+								// 		});
+								// 	}
+								// }
 							};
 							if(this.get_type(node) === "file") {
 								delete tmp.create;
@@ -65,8 +95,11 @@
 						}
 					},
 					'types' : {
-						'default' : { 'icon' : 'folder' },
-						'file' : { 'valid_children' : [], 'icon' : 'file' }
+						'cProject' : {'icon' : 'cproject'},
+						'javaProject' : {'icon' : 'javaproject'},
+						'pythonProject' : {'icon' : 'pythonproject'},
+						// 'default' : { 'icon' : 'folder' },
+						// 'file' : { 'valid_children' : [], 'icon' : 'file' }
 					},
 					'unique' : {
 						'duplicate' : function (name, counter) {
@@ -82,6 +115,7 @@
 						});
 				})
 				.on('create_node.jstree', function (e, data) {
+					console.dir(data);
 					$.get('/fs/operations?operation=create_node', { 'type' : data.node.type, 'id' : data.node.parent, 'text' : data.node.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
@@ -121,6 +155,7 @@
 				})
 				.on('changed.jstree', function (e, data) {
 					if(data && data.selected && data.selected.length) {
+						currentFile = data.selected.join(':');
 						$.get('/fs/operations?operation=get_content&id=' + data.selected.join(':'), function (d) {
 							if(d && typeof d.type !== 'undefined') {
 								$('#data .content').hide();
