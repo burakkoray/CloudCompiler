@@ -69,6 +69,7 @@
 								},
 								"createPythonProject" : {
 									"label"				: "Python Project",
+									"separator_after"   : true,
 									"action"			: function (data) {
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
@@ -77,16 +78,16 @@
 										});
 									}
 								},
-								// "create_file" : {
-								// 	"label"				: "File",
-								// 	"action"			: function (data) {
-								// 		var inst = $.jstree.reference(data.reference),
-								// 			obj = inst.get_node(data.reference);
-								// 		inst.create_node(obj, { type : "file" }, "last", function (new_node) {
-								// 			setTimeout(function () { inst.edit(new_node); },0);
-								// 		});
-								// 	}
-								// }
+								"create_file" : {
+									"label"				: "File",
+									"action"			: function (data) {
+										var inst = $.jstree.reference(data.reference),
+											obj = inst.get_node(data.reference);
+										inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+											setTimeout(function () { inst.edit(new_node); },0);
+										});
+									}
+								}
 							};
 							if(this.get_type(node) === "file") {
 								delete tmp.create;
@@ -99,7 +100,7 @@
 						'javaProject' : {'icon' : 'javaproject'},
 						'pythonProject' : {'icon' : 'pythonproject'},
 						// 'default' : { 'icon' : 'folder' },
-						// 'file' : { 'valid_children' : [], 'icon' : 'file' }
+						'file' : { 'valid_children' : [], 'icon' : 'file' }
 					},
 					'unique' : {
 						'duplicate' : function (name, counter) {

@@ -16,6 +16,10 @@ class FsController extends BaseController {
 						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
 						$rslt = $fs->lst($node, (isset($_GET['id']) && $_GET['id'] === '#'));
 						break;
+					case 'run':
+						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
+						$rslt = $fs->run($node);
+						break;
 					case "get_content":
 						$node = isset($_GET['id']) && $_GET['id'] !== '#' ? $_GET['id'] : '/';
 						$rslt = $fs->data($node);
@@ -93,7 +97,14 @@ class fs
 	}
 
 	public function __construct($base) {
-		$this->base = $this->real($base);
+		try {
+			$this->base = $this->real($base);
+		} catch(Exception $e) {
+			if(!is_dir($base)) {
+				mkdir($base);
+				$this->base = realpath($base);
+			}
+		}
 		if(!$this->base) { throw new Exception('Base directory does not exist'); }
 	}
 	public function lst($id, $with_root = false) {
@@ -137,8 +148,20 @@ class fs
 			$result = array('success' => 'File Saved');
 		} else
 			$result = array('error' => 'Unable to find id:'+$id);
-
 		return $result;
+	}
+
+	public function run($id) {
+		$dir = dirname($this->path($id));
+		$removedLines = (file_exists($dir.DIRECTORY_SEPARATOR.'.pythonproject')) ? 1 : 2;
+		$output = array();
+		exec('cd '.$dir.DIRECTORY_SEPARATOR." && make run",$output);
+		$output = array_slice($output, $removedLines);
+		$output = implode("\n",$output);
+		// $output = preg_replace('/^.+\n/', '', $output);
+		// die(var_dump('cd '.$dir.DIRECTORY_SEPARATOR." && make run"));
+		return $output;
+		// return ;
 	}
 
 	public function data($id) {
@@ -165,6 +188,7 @@ class fs
 				case 'htm':
 				case 'xml':
 				case 'c':
+				case 'java':
 				case 'cpp':
 				case 'h':
 				case 'sql':
@@ -173,6 +197,7 @@ class fs
 				case 'rb':
 				case 'htaccess':
 				case 'php':
+				case 'Makefile':
 					$dat['content'] = file_get_contents($dir);
 					break;
 				case 'jpg':
@@ -183,7 +208,7 @@ class fs
 					$dat['content'] = 'data:'.finfo_file(finfo_open(FILEINFO_MIME_TYPE), $dir).';base64,'.base64_encode(file_get_contents($dir));
 					break;
 				default:
-					$dat['content'] = 'File not recognized: '.$this->id($dir);
+					$dat['content'] = file_get_contents($dir);
 					break;
 			}
 			return $dat;
@@ -209,15 +234,15 @@ class fs
 		$cpCmd = '';
 		switch ($type) {
 			case 'cProject':
-				$templatePath = $userFilePath.'C'.DIRECTORY_SEPARATOR.'*';
-				$cpCmd = "cp -r ".$templatePath.' '.$file;
+				$templatePath = $userFilePath.'C'.DIRECTORY_SEPARATOR.'.';
+				$cpCmd = "cp -r $templatePath ".$file;
 				break;
 			case 'javaProject':
-				$templatePath = $userFilePath.'Java'.DIRECTORY_SEPARATOR.'*';
+				$templatePath = $userFilePath.'Java'.DIRECTORY_SEPARATOR.'.';
 				$cpCmd = "cp -r ".$templatePath.' '.$file;
 				break;
 			case 'pythonProject':
-				$templatePath = $userFilePath.'Python'.DIRECTORY_SEPARATOR.'*';
+				$templatePath = $userFilePath.'Python'.DIRECTORY_SEPARATOR.'.';
 				$cpCmd = "cp -r ".$templatePath.' '.$file;
 				break;
 		}

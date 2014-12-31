@@ -2,7 +2,6 @@
 @section('content')
 <div class="row" role="main" id="container">
 @if(Auth::check())
- <p>  Hello,{{ Auth::user()->username}}. </p>
 
 	<div class="col-md-4" id="tree">
     <ul>
@@ -41,7 +40,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#" >
-        <span class="mega-octicon octicon-terminal"></span> Terminal
+        <img alt="Brand" src="/img/Mac-Terminal-icon.png">Terminal
       </a>
     </div>
 
@@ -56,77 +55,6 @@
   <pre id="yazi"></pre>
 <div id="dom-target" style="visibility: hidden";> <?php  
 
-          // get directory
-          $output=  shell_exec("ls");
-          
-          // go into directory
-          chdir("user-files");     
-          // echo getcwd() . "\n";
-
-
-           $output2=  shell_exec("ls");
-          //echo $output2;
-           
-           define('isim', Auth::user()->username);
-          
-          //echo isim;
-           chdir(isim);
-           $output3=  shell_exec("ls");
-        
-           //shows directory
-           //   echo $output3;
-       
-
-
-
-
-          // burda o klasöre girecek
-  
-          $dir = "/var/www/public/user-files/"; 
-          $direct= $dir.isim;
-          //  echo $direct;
-          //  chdir("C");
-
-          if(file_exists($direct . "/Makefile")) { 
-          shell_exec('clean');
-          shell_exec('make');
-          $outputyeni= shell_exec('./main 2>&1');
-          echo "<pre>$outputyeni</pre>"; 
-            } else { 
-           echo "Couldn't find Makefile in $dir!"; 
-             }  
-
-      
-       //  compile and run c hard coded
-       // shell_exec('gcc main.c Functions.c -o someobjectfile 2>&1');
-       // $output=shell_exec('./someobjectfile');
-       // echo "<pre>$output</pre>";
-
-
-
-               if(file_exists($direct . "/Makefile")) { 
-          
-              shell_exec('clean');
-              shell_exec('make');
-              $outputyeni= shell_exec('java Main 2>&1');
-             //    echo "<pre>$outputyeni</pre>"; 
-                                            
-              } else { 
-              $deneme="3";
-             //  echo "Couldn't find Makefile in $dir!"; 
-              }  
-
-
-               echo "\n";
-   
-              // echo getcwd() . "\n";
-              $path= getcwd() ;
-              // echo $path;
-       
-         
-            // compile and run python in
-            //   $pythonexec = exec('/usr/bin/python /var/www/public/user-files/burakkoray/Python/test.py 2>&1');
-            //   echo "<pre>$pythonexec</pre>";
 
            ?></div>
 

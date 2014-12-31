@@ -933,7 +933,7 @@ i.jstree-icon {
 .jstree-icon.file:before {  content: '\f011'; }
 .jstree-icon.file-class:before,
 .jstree-icon.file-o:before,
-.jstree-icon.file-exec:before {  content: '\f094'; }
+.jstree-icon.file-xec:before {  content: '\f094'; }
 .jstree-icon.file-akefile:before {  content: '\f0c4'; }
 
 /* CUSTOM PROJECT FILES */
