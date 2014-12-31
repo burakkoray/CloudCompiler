@@ -28,11 +28,7 @@
    
 
     <textarea id="code" name="code" rows="5">
-  		int main(int argc, char** argv) {
-  			char buf[100];
-  			return 0;
-  		}
-
+  		
     	</textarea>
 
   
@@ -50,8 +46,6 @@
   </div>
 
 
-  <!-- <div id="event_result" style="margin-top:2em; text-align:center;">&nbsp;</div>
-   -->          
   <pre id="yazi"></pre>
 <div id="dom-target" style="visibility: hidden";> <?php  
 
@@ -94,20 +88,6 @@ $(document).ready(function(){
 <script src="/js/jstree.min.js"></script>
 <script src="/js/jqek.js" type="text/javascript"></script>
      
-<script>
-
-$(function () {
-              $('#tree')
-                .on('changed.jstree', function (e, data) {
-                  var i, j, r = [];
-                  for(i = 0, j = data.selected.length; i < j; i++) {
-                    r.push(data.instance.get_node(data.selected[i]).text);
-                  }
-                  $('#event_result').html('Selected:<br /> ' + r.join(', '));
-                })
-                .jstree();
-            });
-</script>
 
 <script>
 var cEditor = CodeMirror.fromTextArea(document.getElementById("code"), 
@@ -131,13 +111,6 @@ var cEditor = CodeMirror.fromTextArea(document.getElementById("code"),
 
      var mac = CodeMirror.keyMap.default == CodeMirror.keyMap.macDefault;
     CodeMirror.keyMap.default[(mac ? "Cmd" : "Ctrl") + "-Space"] = "autocomplete";
-
-
-  //  $.post( "/fs/operations?operation=set_content&id= ", { content: cEditor.getValue() } );
-
-     //alert(cEditor.getValue());
-    document.write(cEditor.getValue());
-  //  content: cEditor.getValue();
 
 
 </script>

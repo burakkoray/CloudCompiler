@@ -113,28 +113,30 @@ class fs
 		if(!$lst) { throw new Exception('Could not list path: ' . $dir); }
 		$res = array();
 		foreach($lst as $item) {
-			if($item == '.' || $item == '..' || $item === null) { continue; }
+			if($item == '.' || $item == '..' || $item === null || 
+				$item === '.cproject' || $item === '.javaproject' || $item === '.pythonproject') { continue; }
 			$tmp = preg_match('([^ a-zа-я-_0-9.]+)ui', $item);
 			if($tmp === false || $tmp === 1) { continue; }
 			if(is_dir($dir . DIRECTORY_SEPARATOR . $item)) {
-				$type = 'folder';
+				$type = '';
 				$itemDir = $dir . DIRECTORY_SEPARATOR . $item.DIRECTORY_SEPARATOR;
 				if(file_exists($itemDir.'.cproject'))
-					$type = 'cproject';
+					$type = 'cProject';
 				else if(file_exists($itemDir.'.javaproject'))
-					$type = 'javaproject';
+					$type = 'javaProject';
 				else if(file_exists($itemDir.'.pythonproject'))
-					$type = 'pythonproject';
-
-				$res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'icon' => $type, 'type' => $type);
+					$type = 'pythonProject';
+				else
+					$type = 'folder';
+				$res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => $type);
 			}
 			else {
-				if($item !== '.cproject' && $item !== '.javaproject' && $item !== '.pythonproject')
-					$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item,'.') + 1));
+				// TODO: strrpos Makefile -> akefile
+				$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item,'.') + 1));
 			}
 		}
 		if($with_root && $this->id($dir) === '/') {
-			$res = array(array('text' => basename($this->base), 'children' => $res, 'id' => '/', 'icon'=>'folder', 'state' => array('opened' => true, 'disabled' => true)));
+			$res = array(array('text' => basename($this->base), 'children' => $res, 'id' => '/', 'type'=>'root', 'state' => array('opened' => true, 'disabled' => true)));
 		}
 		return $res;
 	}
@@ -251,7 +253,7 @@ class fs
 		if(!empty($cpCmd)) {
 			$output = exec($cpCmd,$output, $retrun_var);
 		}
-		return array('id' => $this->id($dir . DIRECTORY_SEPARATOR . $name),'cmd'=>$cpCmd,'output'=>$output,'returnVar'=>$retrun_var);
+		return array('id' => $this->id($dir . DIRECTORY_SEPARATOR . $name));
 	}
 	public function rename($id, $name) {
 		$dir = $this->path($id);

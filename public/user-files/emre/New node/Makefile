@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -O3
-SOURCES = main.c asd.c
+SOURCES = main.c
 
 default: main
 main: main.c

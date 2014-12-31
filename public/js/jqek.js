@@ -11,7 +11,8 @@
 						'data' : {
 							'url' : '/fs/operations?operation=get_node',
 							'data' : function (node) {
-								return { 'id' : node.id };
+								console.log('nodetype:'+node.type);
+								return { 'id' : node.id, 'type' : node.type };
 							}
 						},
 						'check_callback' : function(o, n, p, i, m) {
@@ -53,7 +54,7 @@
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
 										inst.create_node(obj, { type : "cProject" }, "last", function (new_node) {
-											setTimeout(function () { inst.edit(new_node); },0);
+											setTimeout(function () { inst.edit(new_node); },250);
 										});
 									}
 								},
@@ -63,7 +64,7 @@
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
 										inst.create_node(obj, { type : "javaProject" }, "last", function (new_node) {
-											setTimeout(function () { inst.edit(new_node); },0);
+											setTimeout(function () { inst.edit(new_node); },50);
 										});
 									}
 								},
@@ -74,7 +75,7 @@
 										var inst = $.jstree.reference(data.reference),
 											obj = inst.get_node(data.reference);
 										inst.create_node(obj, { type : "pythonProject" }, "last", function (new_node) {
-											setTimeout(function () { inst.edit(new_node); },0);
+											setTimeout(function () { inst.edit(new_node); },50);
 										});
 									}
 								},
@@ -91,15 +92,22 @@
 							};
 							if(this.get_type(node) === "file") {
 								delete tmp.create;
+							} else if(this.get_type(node) === "root") {
+								delete tmp.create.submenu.create_file;
+								delete tmp.remove;
+								delete tmp.rename;
+								delete tmp.ccp;
 							}
 							return tmp;
 						}
 					},
 					'types' : {
-						'cProject' : {'icon' : 'cproject'},
-						'javaProject' : {'icon' : 'javaproject'},
-						'pythonProject' : {'icon' : 'pythonproject'},
-						// 'default' : { 'icon' : 'folder' },
+						'default' : { 'icon' : 'folder', 'valid_children'	: ['cProject','javaProject','pythonProject']  },
+						'root' : { 'icon' : 'folder', 'valid_children'	: ['cProject','javaProject','pythonProject'] },
+						// 'folder' : { 'icon' : 'folder', 'valid_children'	: ['cProject','javaProject','pythonProject'], 'deletable' : false, 'renamable' : false },
+						'cProject' : {'icon' : 'cproject','valid_children' : "all"},
+						'javaProject' : {'icon' : 'javaproject','valid_children' : "all"},
+						'pythonProject' : {'icon' : 'pythonproject','valid_children' : "all"},
 						'file' : { 'valid_children' : [], 'icon' : 'file' }
 					},
 					'unique' : {
@@ -116,10 +124,10 @@
 						});
 				})
 				.on('create_node.jstree', function (e, data) {
-					console.dir(data);
 					$.get('/fs/operations?operation=create_node', { 'type' : data.node.type, 'id' : data.node.parent, 'text' : data.node.text })
 						.done(function (d) {
 							data.instance.set_id(data.node, d.id);
+							data.instance.refresh();
 						})
 						.fail(function () {
 							data.instance.refresh();
@@ -172,6 +180,8 @@
 										});
 										$('#image').show();
 										break;
+									case 'folder':
+										break;
 									default:
 									// case 'text':
 									// case 'txt':
@@ -192,8 +202,8 @@
 										$('#code').val(d.content);
 										$('#image').hide();
 										$('.CodeMirror').each(function(i, el){
-   										el.CodeMirror.getDoc().setValue(d.content);
-   										$(this).show();
+	   										el.CodeMirror.getDoc().setValue(d.content);
+	   										$(this).show();
 										});
 
 										break;

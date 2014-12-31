@@ -6,7 +6,7 @@ default: main
 main: main.c
 	${CC} ${SOURCES} ${CFLAGS} -o exec
 
-run: exec
+run: main
 	./exec
 
 clean:
