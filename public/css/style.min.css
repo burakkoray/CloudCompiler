@@ -933,8 +933,8 @@ i.jstree-icon {
 .jstree-icon.file:before {  content: '\f011'; }
 .jstree-icon.file-class:before,
 .jstree-icon.file-o:before,
-.jstree-icon.file-xec:before {  content: '\f094'; }
-.jstree-icon.file-akefile:before {  content: '\f0c4'; }
+.jstree-icon.file-exec:before {  content: '\f094'; }
+.jstree-icon.file-makefile:before {  content: '\f0c4'; }
 
 /* CUSTOM PROJECT FILES */
 /*.jstree-default-large .jstree-anchor > .jstree-icon.cproject,
@@ -964,3 +964,71 @@ i.jstree-icon {
 .jstree-icon.cproject:before {content:'\e038'; color: #795548;} 
 .jstree-icon.javaproject:before {content:'\e027'; color: #1565C0;} 
 .jstree-icon.pythonproject:before {content:'\e028'; color: #FFC107;} 
+
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+  padding: 0;
+}
+.navbar-fixed-top {
+  height: 2em;
+}
+
+#code-terminal {
+  position: relative;
+  height: 100%;
+  display: block;
+  background: #272822;
+}
+#terminal-container,
+#code-container {
+  height: calc(50%);
+  width: 100%;
+  position: absolute;
+  left:0;
+  display: block;
+  box-sizing: border-box;
+}
+
+.navbar-header {
+  padding: 9px 15px;
+  color: #80D8FF;
+  font-size: 20px;
+}
+
+.navbar-header span {
+  margin: 0 10px;
+}
+
+#terminal-container {
+  font-size: 14px;
+  color: #f8f8f2;
+  padding: 10px;
+  border-top: 4px solid #f8f8f2;
+  top:calc(50%);
+  overflow: hidden;
+}
+
+#code-container {
+  top:0;
+}
+#code-buttons {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 500;
+}
+.terminal-header {
+  font-size: 26px;
+}
+#terminal-container pre {
+  border: 0 none;
+  border-radius: 0;
+  background: #272822;
+  color: #f8f8f2;
+  font-size: 16px;
+}
+
+.CodeMirror,
+#terminal-container pre {
+  height: 100%;
+}

@@ -6,7 +6,7 @@ default: main
 main: Main.java
 	${CC} ${SOURCES} ${CFLAGS} 
 
-run: Main.class
+run: main
 	java Main
 
 clean:

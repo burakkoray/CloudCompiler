@@ -132,7 +132,13 @@ class fs
 			}
 			else {
 				// TODO: strrpos Makefile -> akefile
-				$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item,'.') + 1));
+				$pos = strrpos($item,'.');
+				$fileIconName = '';
+				if($pos === false)
+					$fileIconName = mb_convert_case($item, MB_CASE_LOWER, "UTF-8");
+				else
+					$fileIconName = mb_convert_case(substr($item, $pos + 1), MB_CASE_LOWER, "UTF-8");
+				$res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.$fileIconName);
 			}
 		}
 		if($with_root && $this->id($dir) === '/') {
@@ -157,7 +163,7 @@ class fs
 		$dir = dirname($this->path($id));
 		$removedLines = (file_exists($dir.DIRECTORY_SEPARATOR.'.pythonproject')) ? 1 : 2;
 		$output = array();
-		exec('cd '.$dir.DIRECTORY_SEPARATOR." && make run",$output);
+		exec('cd '.$dir.DIRECTORY_SEPARATOR." && make run 2>&1",$output);
 		$output = array_slice($output, $removedLines);
 		$output = implode("\n",$output);
 		// $output = preg_replace('/^.+\n/', '', $output);

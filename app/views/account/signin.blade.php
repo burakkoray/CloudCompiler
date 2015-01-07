@@ -2,8 +2,16 @@
 
 @section('content')
    
-   
-   <form class="form-horizontal" action="{{ URL::route('account-sign-in-post')}}" method="post" style="margin: 0 auto;">
+   <div class="middle" style="   position : absolute;    
+    width    : 400px;
+    height   : 200px;
+    left     : 50%;
+    top      : 50%;
+    margin-left : -150px; /* half of the width  */
+    margin-top  : -100px; /* half of the height */
+">
+    
+   <form class="form-horizontal" action="{{ URL::route('account-sign-in-post')}}" method="post" style="margin: 0 auto; align:center;">
   <div class="form-group" >
     <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
     <div class="col-sm-10" >
@@ -39,6 +47,7 @@
     </div>
   </div>
 </form>
+</div>
 
    @stop
 
